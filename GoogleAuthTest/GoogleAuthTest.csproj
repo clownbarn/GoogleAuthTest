@@ -45,7 +45,6 @@
     <Compile Include="Authenticator.cs" />
     <Compile Include="Base32Encoder.cs" />
     <Compile Include="HashedOneTimePassword.cs" />
-    <Compile Include="OneTimePasswordException.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TimeBasedOneTimePassword.cs" />
