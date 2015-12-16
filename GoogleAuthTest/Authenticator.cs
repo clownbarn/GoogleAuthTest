@@ -28,6 +28,8 @@
             if (password == _totp.GetPassword(secret))
                 return true;            
             
+            // I'm not wild about this, but the wisdom of the iternet suggests doing this
+            // in the event that the clocks are out of sync.
             for (int i = 1; i <= checkAdjacentIntervals; i++)
             {
                 if (password == _totp.GetPassword(secret, _totp.GetCurrentCounter() + i))
