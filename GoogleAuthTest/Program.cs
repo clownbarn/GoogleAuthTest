@@ -38,7 +38,7 @@ namespace GoogleAuthTest
             // This demonstrates how to generate a shared secret.
             // Typically, once one is generated, it will be stored in 
             // a database for future use.            
-            _sharedSecret = GenerateSharedSecret(); //"6hLwoaaxQ9"
+            _sharedSecret = GenerateSharedSecret(); //"pI7uJmILHf";
         }
 
         #endregion
@@ -89,6 +89,11 @@ namespace GoogleAuthTest
         /// under Manual Account Entry.  Alternatively, a QR code can be generated.</remarks>
         private void DisplaySecret()
         {
+            Console.WriteLine("This is the raw, unencoded shared secret:");
+            Console.WriteLine();
+            Console.WriteLine(_sharedSecret);
+            Console.WriteLine();
+
             Base32Encoder enc = new Base32Encoder();
 
             string secret = enc.Encode(Encoding.ASCII.GetBytes(_sharedSecret));
