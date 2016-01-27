@@ -90,8 +90,16 @@ namespace GoogleAuthTest
         private void DisplaySecret()
         {
             Console.WriteLine("This is the raw, unencoded shared secret:");
+            
+            //
+            // Display Shared Secret.
+            //
             Console.WriteLine();
+            ConsoleColor currentColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(_sharedSecret);
+            Console.ForegroundColor = currentColor;
+
             Console.WriteLine();
 
             Base32Encoder enc = new Base32Encoder();
@@ -100,8 +108,16 @@ namespace GoogleAuthTest
 
             Console.WriteLine("Create a new account in the Google Authenticator app,");
             Console.WriteLine("then enter the following as the time based key:");
+
+            //
+            // Display Time Based Key (Base32 encoded version of the Shared Secret)
+            //
             Console.WriteLine();
+            currentColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine(secret);
+            Console.ForegroundColor = currentColor;
+
             Console.WriteLine();            
         }
 
