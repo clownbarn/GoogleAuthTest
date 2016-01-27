@@ -1,9 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using ZXing;
+using ZXing.Common;
+using ZXing.QrCode;
 
 namespace GoogleAuthTest
 {
@@ -16,6 +18,12 @@ namespace GoogleAuthTest
         /// when validating a verification code.
         /// </summary>
         private readonly string _sharedSecret = null;
+
+        /// <summary>
+        /// The Label used by the Google Authenticator App when setting 
+        /// up an account using a QR Code.
+        /// </summary>
+        private const string APP_LABEL = "MAX Exchange";
 
         #endregion
 
@@ -50,7 +58,9 @@ namespace GoogleAuthTest
         /// </summary>
         public void Start()
         {
-            DisplaySecret();
+            string timeBasedKey = DisplaySecretAndTimeBasedKey();
+
+            GenerateQRCode(timeBasedKey);
 
             string verificationCode = PromptForVerificationCode();
 
@@ -87,7 +97,7 @@ namespace GoogleAuthTest
         /// </summary>
         /// <remarks>This is what is to be entered into the Google Authenticator app as the KEY 
         /// under Manual Account Entry.  Alternatively, a QR code can be generated.</remarks>
-        private void DisplaySecret()
+        private string DisplaySecretAndTimeBasedKey()
         {
             Console.WriteLine("This is the raw, unencoded shared secret:");
             
@@ -104,7 +114,7 @@ namespace GoogleAuthTest
 
             Base32Encoder enc = new Base32Encoder();
 
-            string secret = enc.Encode(Encoding.ASCII.GetBytes(_sharedSecret));
+            string timeBasedKey = enc.Encode(Encoding.ASCII.GetBytes(_sharedSecret));
 
             Console.WriteLine("Create a new account in the Google Authenticator app,");
             Console.WriteLine("then enter the following as the time based key:");
@@ -115,10 +125,34 @@ namespace GoogleAuthTest
             Console.WriteLine();
             currentColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(secret);
+            Console.WriteLine(timeBasedKey);
             Console.ForegroundColor = currentColor;
 
-            Console.WriteLine();            
+            Console.WriteLine();
+            
+            return timeBasedKey;            
+        }
+
+        private void GenerateQRCode(string timeBasedKey)
+        {
+            var qrcode = new QRCodeWriter();
+            var qrData = string.Format("otpauth://totp/{0}?secret={1}", APP_LABEL, timeBasedKey);
+
+            var barcodeWriter = new BarcodeWriter
+            {
+                Format = BarcodeFormat.QR_CODE,
+                Options = new EncodingOptions
+                {
+                    Height = 300,
+                    Width = 300,
+                    Margin = 1
+                }
+            };
+
+            using (var bitmap = barcodeWriter.Write(qrData))            
+            {
+                bitmap.Save("QRCode.png", ImageFormat.Png);                
+            }
         }
 
         /// <summary>
