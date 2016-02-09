@@ -10,6 +10,7 @@ using ZXing.QrCode;
 
 namespace GoogleAuthTest
 {
+    // Test
     class AuthenticatorTest
     {
         #region Private Fields
